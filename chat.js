@@ -1,4 +1,5 @@
-const API_KEY = process.env.NANO_GPT_API_KEY;const API_URL = "https://nano-gpt.com/api/v1/chat/completions";
+const API_KEY = "18821b6f-4cdc-47ae-90af-fb392eb0b721";
+const API_URL = "https://nano-gpt.com/api/v1/chat/completions";
 
 let messageHistory = [
     {
@@ -17,14 +18,19 @@ let messageHistory = [
         "follow me @YumikoAI_Sol for more alpha! 💕"`
     }
 ];
+
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.querySelector('.chat-input input');
     const sendButton = document.querySelector('.send-btn');
     const chatMessages = document.querySelector('.chat-messages');
 
     async function sendMessage(message) {
-        const response = await fetch('/.netlify/functions/chat', {
+        const response = await fetch(API_URL, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
+            },
             body: JSON.stringify({
                 model: "qwen-turbo",
                 messages: [...messageHistory, { role: "user", content: message }],
@@ -33,9 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         });
 
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         const data = await response.json();
         return data.choices[0].message.content;
-    }    function addMessage(content, isUser = false) {
+    }    
+
+    function addMessage(content, isUser = false) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'user' : 'bot'} new`;
         messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
@@ -74,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessage('Connection error. Please try again.');
         }
     }
+
     sendButton.addEventListener('click', handleSendMessage);
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleSendMessage();

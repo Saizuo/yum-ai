@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             typingIndicator.style.display = 'none';
             console.error('Error:', error);
-            addMessage('Connection error. Please try again.');
+            addMessage('Chatbot release after the launch.🚀');
         }
     }
 
